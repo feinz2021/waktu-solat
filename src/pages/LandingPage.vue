@@ -1,46 +1,57 @@
 <template>
   <body>
     <div class="container">
+      <h5 class="center">Waktu Solat Malaysia</h5>
 
-      <vue3-simple-typeahead
-        id="typeahead_id2"
-        placeholder="Taip Negeri . . ."
-        :items="this.negeri"
-        :minInputLength="1"
-        @selectItem="selectNegeri"
-      >
-      </vue3-simple-typeahead>
-       <label for="typeahead_id2">taip disini⬆️</label>
+      <div v-if="!isLoading" class="row">
+        <div class="col s12 m4 l4 push-m2 push-l2">
+          <vue3-simple-typeahead
+            id="typeahead_id2"
+            placeholder="1. Taip Negeri"
+            :items="this.negeri"
+            :minInputLength="1"
+            @selectItem="selectNegeri"
+          >
+          </vue3-simple-typeahead>
+          <label for="typeahead_id2">1️⃣Taip Negeri</label>
+        </div>
+        <div class="col s12 m4 m4 push-m2 push-l2">
+          <vue3-simple-typeahead
+            id="typeahead_id"
+            placeholder="2. Taip Bandar/Daerah"
+            :items="this.senaraiDaerah"
+            :minInputLength="1"
+            @selectItem="selectDaerah"
+          >
+          </vue3-simple-typeahead>
+          <label for="typeahead_id">2️⃣Taip Bandar/Daerah</label>
+        </div>
+      </div>
 
-      <vue3-simple-typeahead
-        id="typeahead_id"
-        placeholder="Taip Bandar/Daerah . . ."
-        :items="this.senaraiDaerah"
-        :minInputLength="1"
-        @selectItem="selectDaerah"
-        @onFocus="onFocusEventHandler"
-      >
-      </vue3-simple-typeahead>
-       <label for="typeahead_id">taip disini⬆️</label>
+      <div v-if="isLoading" class="center">Data Loading . . .⏳</div>
 
-      <table class="responsive-table centered">
-        <thead>
-          <tr>
-            <th>Imsak</th>
-            <th>Subuh</th>
-            <th>Syuruk</th>
-            <th>Zohor</th>
-            <th>Asar</th>
-            <th>Maghrib</th>
-            <th>Isyak</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td v-for="time in waktuSolat" :key="time">{{ time }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-if="!isLoading" class="row">
+        <div class="col s12 m8 l8 push-m2 push-l2">
+          <table class="responsive-table centered">
+            <thead>
+              <tr>
+                <th>Imsak</th>
+                <th>Subuh</th>
+                <th>Syuruk</th>
+                <th>Zohor</th>
+                <th>Asar</th>
+                <th>Maghrib</th>
+                <th>Isyak</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td v-for="time in waktuSolat" :key="time">{{ time }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </body>
 </template>
@@ -50,8 +61,8 @@ import axios from "axios";
 export default {
   data() {
     return {
-      byCity: [],
-      cityIndex: 0,
+      stateList: [],
+      stateIndex: 0,
       waktuLength: 0,
       waktuSolat: [],
       negeri: [
@@ -80,47 +91,37 @@ export default {
   },
   mounted() {
     window.M.AutoInit();
+    this.isLoading = true;
+    return axios
+      .get("https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json")
+      .then((response) => (this.stateList = response.data.data.negeri))
+      .then(() => {
+        this.isLoading = false;
+      });
   },
   methods: {
-    onFocusEventHandler() {
-      try {
-          const numberOfDaerah = this.byCity.length;
-          for (let i = 0; i < numberOfDaerah; i++) {
-            this.senaraiDaerah[i] = this.byCity[i].nama;
-          }
-      } catch (e) {
-        this.$toast.open({
-          message: "Error Loading Data, Please Try Again Later . . .",
-          type: "error",
-          duration: 3000,
-          dismissible: true,
-          position: "bottom",
-        });
-        console.log(e);
-      }
-    },
     selectDaerah(a) {
-      const result = this.byCity.findIndex(({ nama }) => nama === a);
-      this.cityIndex = result;
-      this.waktuLength = this.byCity[result].waktu_solat.length;
+      const cityIndex = this.stateList[this.stateIndex].zon.findIndex(
+        ({ nama }) => nama === a
+      );
 
-      console.log(a);
-
-      this.temp2 = result;
-      this.temp = this.byCity[result].waktu_solat[0].name;
+      this.waktuLength =
+        this.stateList[this.stateIndex].zon[cityIndex].waktu_solat.length;
 
       for (let i = 0; i < this.waktuLength; i++) {
-        this.waktuSolat[i] = this.byCity[result].waktu_solat[i].time;
+        this.waktuSolat[i] =
+          this.stateList[this.stateIndex].zon[cityIndex].waktu_solat[i].time;
       }
     },
     selectNegeri(a) {
-      this.senaraiDaerah = [];
-      return axios
-        .get(
-          "https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?negeri=" +
-            a
-        )
-        .then((response) => (this.byCity = response.data.data.zon));
+      const result = this.stateList.findIndex(({ nama }) => nama === a);
+
+      this.stateIndex = result;
+
+      const numberOfDaerah = this.stateList[this.stateIndex].zon.length;
+      for (let i = 0; i < numberOfDaerah; i++) {
+        this.senaraiDaerah[i] = this.stateList[this.stateIndex].zon[i].nama;
+      }
     },
   },
 };
