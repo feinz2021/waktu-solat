@@ -5,7 +5,7 @@
       <div class="container">
         <div
           class="card-panel"
-          style="background-color: rgba(255, 255, 255, 0.6)"
+          style="background-color: rgba(255, 255, 255, 0.6); margin-top: 50px"
         >
           <h5 class="center">Waktu Solat Malaysia</h5>
 
@@ -123,6 +123,7 @@ export default {
     };
   },
   mounted() {
+    document.title = "Waktu Solat Malaysia";
     window.M.AutoInit();
     this.isLoading = true;
     return axios
