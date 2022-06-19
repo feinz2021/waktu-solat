@@ -1,17 +1,29 @@
 <template>
   <body>
     <div class="container">
+
+      <vue3-simple-typeahead
+        id="typeahead_id2"
+        placeholder="Taip Negeri . . ."
+        :items="this.negeri"
+        :minInputLength="1"
+        @selectItem="selectNegeri"
+      >
+      </vue3-simple-typeahead>
+       <label for="typeahead_id2">taip disini⬆️</label>
+
       <vue3-simple-typeahead
         id="typeahead_id"
-        placeholder="Start writing..."
+        placeholder="Taip Bandar/Daerah . . ."
         :items="this.senaraiDaerah"
         :minInputLength="1"
-        @selectItem="selectItemEventHandler"
+        @selectItem="selectDaerah"
         @onFocus="onFocusEventHandler"
       >
       </vue3-simple-typeahead>
+       <label for="typeahead_id">taip disini⬆️</label>
 
-      <table>
+      <table class="responsive-table centered">
         <thead>
           <tr>
             <th>Imsak</th>
@@ -23,25 +35,12 @@
             <th>Isyak</th>
           </tr>
         </thead>
-
         <tbody>
           <tr>
-            <td></td>
+            <td v-for="time in waktuSolat" :key="time">{{ time }}</td>
           </tr>
         </tbody>
       </table>
-
-      <!-- <ul>
-        <li
-          v-for="(nama, index) in senaraiDaerah"
-          :key="nama"
-          @click="clicked(index)"
-          style="cursor: pointer"
-        >
-          {{ index + 1 + "." }}
-          {{ nama }}
-        </li>
-      </ul> -->
     </div>
   </body>
 </template>
@@ -51,40 +50,77 @@ import axios from "axios";
 export default {
   data() {
     return {
-      byState: [],
-      nama: "",
-      waktu: "",
-      negeri: "sabah",
+      byCity: [],
+      cityIndex: 0,
+      waktuLength: 0,
+      waktuSolat: [],
+      negeri: [
+        "wilayah persekutuan",
+        "terengganu",
+        "sarawak",
+        "selangor",
+        "sabah",
+        "perak",
+        "pulau pinang",
+        "perlis",
+        "pahang",
+        "negeri sembilan",
+        "melaka",
+        "kelantan",
+        "kedah",
+        "johor",
+      ],
       senaraiDaerah: [],
 
+      isLoading: false,
+
       temp: "",
+      temp2: "",
     };
   },
   mounted() {
     window.M.AutoInit();
-    axios
-      .get(
-        "https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?negeri=" +
-          this.negeri
-      )
-      .then((response) => (this.byState = response.data.data));
   },
   methods: {
     onFocusEventHandler() {
       try {
-        const numberOfDaerah = this.byState.zon.length;
-        for (let i = 0; i < numberOfDaerah; i++) {
-          this.senaraiDaerah[i] = this.byState.zon[i].nama;
-        }
+          const numberOfDaerah = this.byCity.length;
+          for (let i = 0; i < numberOfDaerah; i++) {
+            this.senaraiDaerah[i] = this.byCity[i].nama;
+          }
       } catch (e) {
-        console.log("a");
+        this.$toast.open({
+          message: "Error Loading Data, Please Try Again Later . . .",
+          type: "error",
+          duration: 3000,
+          dismissible: true,
+          position: "bottom",
+        });
+        console.log(e);
       }
     },
-    // selectItemEventHandler(a) {
-    //   const result = this.taskList.find(({ taskName }) => taskName === a);
-    // },
-    clicked(i) {
-      this.temp = this.byState.zon[i].waktu_solat[1].time;
+    selectDaerah(a) {
+      const result = this.byCity.findIndex(({ nama }) => nama === a);
+      this.cityIndex = result;
+      this.waktuLength = this.byCity[result].waktu_solat.length;
+
+      console.log(a);
+
+      this.temp2 = result;
+      this.temp = this.byCity[result].waktu_solat[0].name;
+
+      for (let i = 0; i < this.waktuLength; i++) {
+        this.waktuSolat[i] = this.byCity[result].waktu_solat[i].time;
+      }
+    },
+    selectNegeri(a) {
+      this.senaraiDaerah = [];
+      return axios
+        .get(
+          "https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?negeri=" +
+            a
+        )
+        .then((response) => (this.byCity = response.data.data.zon));
     },
   },
 };
