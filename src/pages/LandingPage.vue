@@ -144,6 +144,13 @@ export default {
   mounted() {
     document.title = "Waktu Solat Malaysia";
     window.M.AutoInit();
+    const nowDate = new Date();
+    this.dateSave =
+      nowDate.getDate() +
+      "/" +
+      (nowDate.getMonth() + 1) +
+      "/" +
+      nowDate.getFullYear();
 
     this.isLoading = true;
     return axios
@@ -156,7 +163,6 @@ export default {
         try {
           const localStateIndex = localStorage.getItem("stateIndex");
           const localCityIndex = localStorage.getItem("cityIndex");
-          this.dateSave = localStorage.getItem("dateSave");
           this.negeriSave = localStorage.getItem("negeriSave");
           this.daerahSave = localStorage.getItem("daerahSave");
 
@@ -173,15 +179,7 @@ export default {
   },
   methods: {
     selectNegeri(a) {
-      const nowDate = new Date();
-      this.dateSave =
-        nowDate.getDate() +
-        "/" +
-        (nowDate.getMonth() + 1) +
-        "/" +
-        nowDate.getFullYear();
-      localStorage.setItem("dateSave", this.dateSave);
-
+      this.senaraiDaerah = [];
       localStorage.setItem("negeriSave", a);
 
       const result = this.stateList.findIndex(({ nama }) => nama === a);
