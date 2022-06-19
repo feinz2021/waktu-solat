@@ -65,7 +65,6 @@
   <footer class="page-footer" style="background-color: transparent">
     <div class="footer-copyright" style="background-color: #00796b">
       <div class="container">
-        © 2022 Copyright Text
         <a
           class="grey-text text-lighten-4 left"
           href="https://zaimramlan.github.io/waktu-solat-api/"
