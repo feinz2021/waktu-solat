@@ -47,8 +47,8 @@
 
               <div v-if="!isLoading">
                 <div class="center" style="font-weight: bold">
-                  {{ capitalizeFirstLetter(negeriSave) }},
-                  {{ capitalizeFirstLetter(daerahSave) }}
+                  {{ negeriSave }},
+                  {{ daerahSave }}
                   <br />{{ dateSave }}
                 </div>
                 <table class="responsive-table centered">
@@ -210,9 +210,6 @@ export default {
         this.waktuSolat[i] =
           this.stateList[this.stateIndex].zon[cityIndex].waktu_solat[i].time;
       }
-    },
-    capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
     },
     time24to12(time) {
       // Check correct time format and split into components
