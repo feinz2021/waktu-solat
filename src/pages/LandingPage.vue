@@ -3,14 +3,12 @@
   <body>
     <main>
       <div class="container">
+        <div style="margin-top: 50px"></div>
         <div class="row">
           <div class="col s12 m10 l10 push-m1 push-l1">
             <div
               class="card-panel"
-              style="
-                background-color: rgba(255, 255, 255, 0.6);
-                margin-top: 50px;
-              "
+              style="background-color: rgba(255, 255, 255, 0.6)"
             >
               <h5 class="center capital-first">Waktu Solat Malaysia</h5>
 
@@ -84,7 +82,9 @@
             </div>
           </div>
         </div>
+        <div style="margin-bottom: 50px"></div>
       </div>
+      
     </main>
   </body>
   <footer class="page-footer" style="background-color: transparent">
@@ -249,5 +249,12 @@ body {
 
 main {
   flex: 1 0 auto;
+}
+
+footer {
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
 </style>
