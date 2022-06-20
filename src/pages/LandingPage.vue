@@ -88,7 +88,7 @@
     </main>
   </body>
   <footer class="page-footer" style="background-color: transparent">
-    <div class="footer-copyright" style="background-color: #00796b">
+    <div class="footer-copyright" style="background-color: #004d40">
       <div class="container">
         <a
           class="grey-text text-lighten-4 left"
