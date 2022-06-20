@@ -46,10 +46,15 @@
               <div v-if="isLoading" class="center">Data Loading . . .⏳</div>
 
               <div v-if="!isLoading">
-                <div class="center" style="font-weight: bold">
+                <div
+                  class="center"
+                  style="font-weight: bold; text-transform: capitalize"
+                >
                   {{ negeriSave }},
                   {{ daerahSave }}
-                  <br />{{ dateSave }}
+                </div>
+                <div class="center" style="font-weight: bold">
+                  {{ dateSave }}
                 </div>
                 <table class="responsive-table centered">
                   <thead>
