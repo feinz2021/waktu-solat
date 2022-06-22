@@ -20,6 +20,7 @@
                     :items="this.negeri"
                     :minInputLength="1"
                     @selectItem="selectNegeri"
+                    onfocus="this.value=''"
                   >
                   </vue3-simple-typeahead>
                   <label style="font-size: large" for="typeahead_id2"
@@ -33,6 +34,7 @@
                     :items="this.senaraiDaerah"
                     :minInputLength="1"
                     @selectItem="selectDaerah"
+                    onfocus="this.value=''"
                   >
                   </vue3-simple-typeahead>
                   <label style="font-size: large" for="typeahead_id"
